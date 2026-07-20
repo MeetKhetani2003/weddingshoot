@@ -1,0 +1,197 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #0a0a0a;
+  --color-blush: #eddddd;
+  --color-petal: #f5eae3;
+  --color-gold: #c7a86c;
+  --color-gold-deep: #a8894f;
+  --color-bone: #faf8f6;
+  --color-sand: #f2ece5;
+  --color-mist: #e9e2d9;
+
+  --font-serif: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
+  --font-sans: var(--font-inter), Inter, system-ui, sans-serif;
+  --font-script: var(--font-script), "Great Vibes", cursive;
+}
+
+:root {
+  --tb-blush: #eddddd;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #faf8f6;
+  color: #0a0a0a;
+  font-family: var(--font-inter), Inter, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-serif {
+  font-family: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
+}
+
+.font-script {
+  font-family: var(--font-greatvibes), "Great Vibes", cursive;
+}
+
+/* ---------- Editorial helpers ---------- */
+.eyebrow {
+  font-size: 0.68rem;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: #a8894f;
+  font-weight: 500;
+}
+
+.h-display {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-weight: 400;
+  line-height: 1.04;
+  letter-spacing: -0.01em;
+}
+
+.gold-rule {
+  width: 56px;
+  height: 1px;
+  background: linear-gradient(to right, #c7a86c, transparent);
+}
+
+/* ---------- Reveal animations ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(36px);
+  transition:
+    opacity 1s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-mask {
+  overflow: hidden;
+}
+
+.reveal-mask > span {
+  display: block;
+  transform: translateY(110%);
+  transition: transform 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal-mask.is-visible > span {
+  transform: translateY(0);
+}
+
+/* ---------- Marquee ---------- */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 38s linear infinite;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* ---------- Hero ---------- */
+@keyframes heroZoom {
+  from {
+    transform: scale(1.12);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.hero-zoom {
+  animation: heroZoom 2.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-up {
+  animation: fadeInUp 1.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ---------- Luxury hover ---------- */
+.lux-img {
+  overflow: hidden;
+}
+
+.lux-img img {
+  transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.lux-img:hover img {
+  transform: scale(1.06);
+}
+
+.link-underline {
+  position: relative;
+}
+
+.link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.link-underline:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* ---------- Story highlights scroll ---------- */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ---------- Details / FAQ ---------- */
+details.faq summary::-webkit-details-marker {
+  display: none;
+}
+
+details.faq[open] .faq-icon {
+  transform: rotate(45deg);
+}
+
+.faq-icon {
+  transition: transform 0.35s ease;
+}

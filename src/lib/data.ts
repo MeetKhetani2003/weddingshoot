@@ -301,7 +301,7 @@ export const portfolio = [
   { title: "Sangeet Under Stars", place: "Jaipur", image: "/DSC_0726.jpg", tag: "Films" },
   { title: "Waiting for You", place: "Maternity Editorial", image: "/DSC_0838.JPG", tag: "Maternity" },
   { title: "Fourteen Days Old", place: "Newborn Session", image: "/DSC_0865.JPG", tag: "Newborn" },
-  { title: "The Dhingra Family", place: "Family Portraits", image: "/DSC_0868.JPG", tag: "Family" },,
+  { title: "The Dhingra Family", place: "Family Portraits", image: "/DSC_0868.JPG", tag: "Family" },
   { title: "Beautiful Memory 1", place: "Celebration", image: "/DSC_1679.JPG", tag: "Wedding" },
   { title: "Beautiful Memory 2", place: "Celebration", image: "/DSC_1682.JPG", tag: "Destination" },
   { title: "Beautiful Memory 3", place: "Celebration", image: "/DSC_1725.JPG", tag: "Photography" },

@@ -2,12 +2,11 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import Lenis from "lenis";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 export default function SmoothScroll({ children }: { children: ReactNode }) {
   const [lenis, setLenis] = useState<Lenis | null>(null);
   const pathname = usePathname();
-  const searchParams = useSearchParams();
 
   useEffect(() => {
     const lenisInstance = new Lenis({
@@ -35,7 +34,7 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
     if (lenis) {
       lenis.scrollTo(0, { immediate: true });
     }
-  }, [pathname, searchParams, lenis]);
+  }, [pathname, lenis]);
 
   return <>{children}</>;
 }

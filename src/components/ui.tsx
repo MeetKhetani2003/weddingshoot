@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, useState, useCallback, type ReactNode } from "react";
+import useEmblaCarousel from "embla-carousel-react";
 
 /* ---------------- Reveal on scroll ---------------- */
 export function Reveal({
@@ -125,36 +126,47 @@ export function Marquee({ items, light = false }: { items: string[]; light?: boo
   );
 }
 
-/* ---------------- Instagram story highlights ---------------- */
-export function Highlights({
+/* ---------------- Editorial Portrait Cards ---------------- */
+export function ExploreCards({
   items,
 }: {
   items: { label: string; image: string; href: string }[];
 }) {
+  const [emblaRef] = useEmblaCarousel({
+    align: "start",
+    containScroll: "trimSnaps",
+    dragFree: true,
+  });
+
   return (
-    <div className="no-scrollbar flex gap-6 overflow-x-auto px-6 pb-2 md:justify-center md:flex-wrap md:overflow-visible">
-      {items.map((h) => (
-        <Link
-          key={h.label}
-          href={h.href}
-          className="group flex shrink-0 flex-col items-center gap-3"
-        >
-          <span className="rounded-full bg-gradient-to-tr from-gold via-blush to-gold p-[2px] transition-transform duration-500 group-hover:scale-105">
-            <span className="block rounded-full bg-bone p-[3px]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={h.image}
-                alt={h.label}
-                className="h-16 w-16 rounded-full object-cover md:h-20 md:w-20"
-                loading="lazy"
-              />
-            </span>
-          </span>
-          <span className="text-[0.62rem] uppercase tracking-[0.25em] text-ink/60 group-hover:text-gold transition-colors">
-            {h.label}
-          </span>
-        </Link>
-      ))}
+    <div className="overflow-hidden w-full px-6" ref={emblaRef}>
+      <div className="flex gap-4 md:gap-6 touch-pan-y cursor-grab active:cursor-grabbing">
+        {items.map((h) => (
+          <Link
+            key={h.label}
+            href={h.href}
+            className="group relative flex shrink-0 flex-col overflow-hidden w-64 h-[24rem] md:w-72 md:h-[30rem]"
+            draggable={false}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={h.image}
+              alt={h.label}
+              className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105 pointer-events-none"
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/20 to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-100 pointer-events-none" />
+            <div className="absolute bottom-6 left-6 right-6 pointer-events-none">
+              <span className="block text-xs uppercase tracking-[0.3em] text-bone mb-2 opacity-80 transition-opacity duration-500 group-hover:opacity-100">
+                Explore
+              </span>
+              <span className="block h-display text-2xl text-bone transition-transform duration-500 group-hover:translate-x-1">
+                {h.label}
+              </span>
+            </div>
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }
@@ -178,5 +190,184 @@ export function Breadcrumbs({ items }: { items: { label: string; href?: string }
         ))}
       </ol>
     </nav>
+  );
+}
+
+/* ---------------- Album Modal ---------------- */
+function AlbumModal({
+  album,
+  onClose,
+}: {
+  album: { title: string; place: string; images: string[] };
+  onClose: () => void;
+}) {
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    align: "center",
+    containScroll: "trimSnaps",
+  });
+
+  const images = Array.isArray(album) ? album : (album?.images || []);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [rotations, setRotations] = useState<Record<number, number>>({});
+
+  const rotateImage = useCallback(() => {
+    setRotations((prev) => ({
+      ...prev,
+      [selectedIndex]: (prev[selectedIndex] || 0) - 90,
+    }));
+  }, [selectedIndex]);
+
+  const scrollPrev = useCallback(() => {
+    if (emblaApi) emblaApi.scrollPrev();
+  }, [emblaApi]);
+
+  const scrollNext = useCallback(() => {
+    if (emblaApi) emblaApi.scrollNext();
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    const onSelect = () => {
+      setSelectedIndex(emblaApi.selectedScrollSnap());
+    };
+    emblaApi.on("select", onSelect);
+    emblaApi.on("reInit", onSelect);
+    return () => {
+      emblaApi.off("select", onSelect);
+      emblaApi.off("reInit", onSelect);
+    };
+  }, [emblaApi]);
+
+  return (
+    <div className="fixed inset-0 z-[100] flex flex-col bg-ink/95 backdrop-blur-xl transition-all duration-500 opacity-100">
+      <div className="flex items-center justify-between p-6">
+        <div className="flex flex-col">
+          <span className="text-bone h-display text-2xl tracking-wide">{album.title}</span>
+          <span className="text-bone/60 text-[0.6rem] uppercase tracking-[0.3em] mt-1">{album.place}</span>
+        </div>
+        <button
+          onClick={onClose}
+          className="text-bone/70 hover:text-gold transition-colors p-2 rounded-full border border-bone/20 hover:border-gold/50"
+          aria-label="Close Gallery"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+      
+      <div className="flex-1 relative overflow-hidden flex items-center group">
+        <button 
+          onClick={scrollPrev}
+          className="absolute left-4 md:left-8 z-10 p-3 rounded-full bg-ink/50 text-bone border border-bone/20 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity hover:bg-ink hover:text-gold disabled:opacity-0"
+          disabled={selectedIndex === 0}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+        
+        <div className="w-full h-full overflow-hidden" ref={emblaRef}>
+          <div className="flex h-full touch-pan-y cursor-grab active:cursor-grabbing">
+            {images.map((img, i) => (
+              <div key={i} className="flex-[0_0_100%] h-full flex items-center justify-center p-4 md:p-12">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={img}
+                  alt={`Album image ${i + 1}`}
+                  className="max-h-full max-w-full object-contain pointer-events-none rounded-sm shadow-2xl ring-1 ring-bone/10"
+                  style={{ transform: `rotate(${rotations[i] || 0}deg)`, transition: "transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)" }}
+                  loading="lazy"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <button 
+          onClick={scrollNext}
+          className="absolute right-4 md:right-8 z-10 p-3 rounded-full bg-ink/50 text-bone border border-bone/20 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity hover:bg-ink hover:text-gold disabled:opacity-0"
+          disabled={selectedIndex === album.images.length - 1}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+      </div>
+
+      <div className="p-6 grid grid-cols-3 items-center text-bone/50 text-[0.65rem] uppercase tracking-[0.3em]">
+        <div />
+        <div className="text-center">
+          <span>{selectedIndex + 1} / {images.length}</span>
+        </div>
+        <div className="flex justify-end">
+          <button 
+            onClick={rotateImage} 
+            className="flex items-center gap-2 px-4 py-2 rounded-full border border-bone/20 bg-ink/50 backdrop-blur-sm hover:bg-bone hover:text-ink hover:border-bone transition-all duration-300"
+            aria-label="Rotate Image"
+          >
+            Rotate
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------------- Swipeable Wedding Stories ---------------- */
+export function SwipeableStories({
+  items,
+}: {
+  items: { title: string; image: string; tag: string; place: string; images?: string[] }[];
+}) {
+  const [emblaRef] = useEmblaCarousel({
+    align: "start",
+    containScroll: "trimSnaps",
+    dragFree: true,
+  });
+
+  const [activeAlbum, setActiveAlbum] = useState<{ title: string; place: string; images: string[] } | null>(null);
+
+  // Close modal with escape key
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setActiveAlbum(null);
+    };
+    window.addEventListener("keydown", handleEsc);
+    return () => window.removeEventListener("keydown", handleEsc);
+  }, []);
+
+  return (
+    <>
+      <div className="overflow-hidden w-full" ref={emblaRef}>
+        <div className="flex gap-6 touch-pan-y cursor-grab active:cursor-grabbing">
+          {items.map((p) => (
+            <div key={p.title} className="group block shrink-0 w-80 md:w-96">
+              <button
+                onClick={() => p.images ? setActiveAlbum({ title: p.title, place: p.place, images: p.images }) : null}
+                className="block w-full text-left"
+                draggable={false}
+              >
+                <div className="lux-img overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={p.image}
+                    alt={p.title}
+                    className="aspect-[4/5] w-full object-cover pointer-events-none transition-transform duration-700 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                </div>
+                <div className="mt-5 flex items-baseline justify-between pointer-events-none">
+                  <h3 className="h-display text-2xl transition-colors group-hover:text-ink/70">{p.title}</h3>
+                  <span className="text-[0.6rem] uppercase tracking-[0.3em] text-ink/70">
+                    {p.tag}
+                  </span>
+                </div>
+                <p className="mt-1 text-sm text-ink/50 pointer-events-none">{p.place}</p>
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+      
+      {activeAlbum && (
+        <AlbumModal album={activeAlbum} onClose={() => setActiveAlbum(null)} />
+      )}
+    </>
   );
 }

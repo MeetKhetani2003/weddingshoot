@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { SITE } from "@/lib/data";
 
 const links = [
   { label: "Home", href: "/" },
@@ -12,7 +13,7 @@ const links = [
   { label: "Packages", href: "/packages" },
   { label: "Journal", href: "/journal" },
   { label: "Testimonials", href: "/testimonials" },
-  { label: "Contact", href: "/contact" },
+  { label: "Contact Us", href: "/contact" },
 ];
 
 const serviceLinks = [
@@ -59,61 +60,106 @@ export default function Nav() {
         }`}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 md:py-5">
-          <Link href="/" className="group">
-            <img 
-              src="/teb logo.png" 
-              alt="The Eternal Bliss Logo" 
-              className={`h-14 md:h-16 w-auto object-contain transition-all duration-500 ${
-                !dark ? "brightness-0 invert" : ""
-              }`} 
-            />
-            <span
-              className={`block text-[0.55rem] uppercase tracking-[0.4em] transition-colors ${
-                dark ? "text-gold-deep" : "text-gold"
+          {/* Left Side */}
+          <div className="flex flex-1 justify-start">
+            <nav className="hidden items-center gap-4 lg:gap-8 md:flex">
+              {["/", "/about", "/portfolio", "/contact"].map((href) => {
+                const link = links.find((l) => l.href === href)!;
+                return (
+                  <Link
+                    key={href}
+                    href={href}
+                    className={`link-underline text-[0.68rem] uppercase tracking-[0.3em] transition-colors whitespace-nowrap ${
+                      dark ? "text-ink/80 hover:text-ink" : "text-bone/85 hover:text-bone"
+                    } ${pathname === href ? "text-bone" : ""}`}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
+
+          {/* Center Logo */}
+          <div className="flex justify-center lg:px-8">
+            <Link href="/" className="group flex flex-col items-center">
+              <img 
+                src="/teb logo.png" 
+                alt="The Eternal Bliss Logo" 
+                className={`h-20 md:h-24 w-auto object-contain transition-all duration-500 ${
+                  !dark ? "brightness-0 invert" : ""
+                }`} 
+              />
+              <span
+                className={`block text-[0.55rem] uppercase tracking-[0.4em] transition-colors mt-2 ${
+                  dark ? "text-ink" : "text-bone"
+                }`}
+              >
+                Since 2016
+              </span>
+            </Link>
+          </div>
+
+          {/* Right Side */}
+          <div className="flex flex-1 justify-end items-center gap-5 xl:gap-8">
+            <nav className="hidden items-center gap-4 lg:gap-6 md:flex">
+              <a
+                href={`https://instagram.com/${SITE.instagram.replace('@', '')}`}
+                target="_blank"
+                rel="noreferrer"
+                className={`transition-all hover:scale-110 ${
+                  dark ? "text-ink/80 hover:text-ink" : "text-bone/85 hover:text-bone"
+                }`}
+                aria-label="Instagram"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+              </a>
+              <a
+                href="#"
+                target="_blank"
+                rel="noreferrer"
+                className={`transition-all hover:scale-110 ${
+                  dark ? "text-ink/80 hover:text-ink" : "text-bone/85 hover:text-bone"
+                }`}
+                aria-label="Facebook"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+              </a>
+              <a
+                href="#"
+                target="_blank"
+                rel="noreferrer"
+                className={`transition-all hover:scale-110 ${
+                  dark ? "text-ink/80 hover:text-ink" : "text-bone/85 hover:text-bone"
+                }`}
+                aria-label="YouTube"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/><path d="m10 15 5-3-5-3z"/></svg>
+              </a>
+            </nav>
+
+            <button
+              onClick={() => setOpen(!open)}
+              aria-label="Menu"
+              className={`flex items-center gap-3 text-[0.68rem] uppercase tracking-[0.3em] md:hidden ${
+                dark ? "text-ink" : "text-bone"
               }`}
             >
-              Since 2016
-            </span>
-          </Link>
-
-          <nav className="hidden items-center gap-8 lg:flex">
-            {["/", "/about", "/portfolio", "/packages", "/journal", "/contact"].map((href) => {
-              const link = links.find((l) => l.href === href)!;
-              return (
-                <Link
-                  key={href}
-                  href={href}
-                  className={`link-underline text-[0.68rem] uppercase tracking-[0.3em] transition-colors ${
-                    dark ? "text-ink/80 hover:text-ink" : "text-bone/85 hover:text-bone"
-                  } ${pathname === href ? "text-gold" : ""}`}
-                >
-                  {link.label}
-                </Link>
-              );
-            })}
-          </nav>
-
-          <button
-            onClick={() => setOpen(!open)}
-            aria-label="Menu"
-            className={`flex items-center gap-3 text-[0.68rem] uppercase tracking-[0.3em] ${
-              dark ? "text-ink" : "text-bone"
-            }`}
-          >
-            <span className="hidden md:inline">{open ? "Close" : "Menu"}</span>
-            <span className="flex h-10 w-10 flex-col items-center justify-center gap-1.5 border border-current/30 rounded-full">
-              <span
-                className={`block h-px w-4 bg-current transition-transform duration-300 ${
-                  open ? "translate-y-[3.5px] rotate-45" : ""
-                }`}
-              />
-              <span
-                className={`block h-px w-4 bg-current transition-transform duration-300 ${
-                  open ? "-translate-y-[3.5px] -rotate-45" : ""
-                }`}
-              />
-            </span>
-          </button>
+              <span className="hidden md:inline">{open ? "Close" : "Menu"}</span>
+              <span className="flex h-10 w-10 flex-col items-center justify-center gap-1.5 border border-current/30 rounded-full">
+                <span
+                  className={`block h-px w-4 bg-current transition-transform duration-300 ${
+                    open ? "translate-y-[3.5px] rotate-45" : ""
+                  }`}
+                />
+                <span
+                  className={`block h-px w-4 bg-current transition-transform duration-300 ${
+                    open ? "-translate-y-[3.5px] -rotate-45" : ""
+                  }`}
+                />
+              </span>
+            </button>
+          </div>
         </div>
       </header>
 
@@ -137,7 +183,7 @@ export default function Nav() {
                 >
                   <Link
                     href={l.href}
-                    className="h-display text-3xl text-bone/85 transition-colors hover:text-gold md:text-5xl"
+                    className="h-display text-3xl text-bone/85 transition-colors hover:text-bone md:text-5xl"
                   >
                     {l.label}
                   </Link>
@@ -158,14 +204,14 @@ export default function Nav() {
                 >
                   <Link
                     href={l.href}
-                    className="text-sm uppercase tracking-[0.25em] text-bone/60 transition-colors hover:text-gold"
+                    className="text-sm uppercase tracking-[0.25em] text-bone/60 transition-colors hover:text-bone"
                   >
                     {l.label}
                   </Link>
                 </li>
               ))}
             </ul>
-            <p className="font-script mt-10 text-3xl text-gold">
+            <p className="font-script mt-10 text-3xl text-bone">
               Creating timeless memories
             </p>
           </div>

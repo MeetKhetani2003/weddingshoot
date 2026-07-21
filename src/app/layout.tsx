@@ -1,18 +1,19 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { Cormorant_Garamond, Inter, Great_Vibes } from "next/font/google";
+import { Marcellus, Nunito_Sans, Great_Vibes } from "next/font/google";
 import "./globals.css";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import SmoothScroll from "@/components/SmoothScroll";
+import WhatsAppButton from "@/components/WhatsAppButton";
 
-const cormorant = Cormorant_Garamond({
+const marcellus = Marcellus({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
-  variable: "--font-cormorant",
+  weight: "400",
+  variable: "--font-cormorant", // Keep the same variable name to avoid touching globals.css and Tailwind classes unnecessarily
 });
 
-const inter = Inter({
+const nunito = Nunito_Sans({
   subsets: ["latin"],
   variable: "--font-inter",
 });
@@ -59,7 +60,7 @@ const orgSchema = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className={`${cormorant.variable} ${inter.variable} ${greatVibes.variable}`}>
+    <html lang="en" className={`${marcellus.variable} ${nunito.variable} ${greatVibes.variable}`}>
       <body className="bg-bone text-ink antialiased">
         <script
           type="application/ld+json"
@@ -69,6 +70,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <Nav />
           <main className="pb-14 md:pb-0">{children}</main>
           <Footer />
+          <WhatsAppButton />
         </SmoothScroll>
       </body>
     </html>

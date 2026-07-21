@@ -1,14 +1,14 @@
 @import "tailwindcss";
 
 @theme {
-  --color-ink: #0a0a0a;
-  --color-blush: #eddddd;
-  --color-petal: #f5eae3;
-  --color-gold: #c7a86c;
-  --color-gold-deep: #a8894f;
-  --color-bone: #faf8f6;
-  --color-sand: #f2ece5;
-  --color-mist: #e9e2d9;
+  --color-ink: #000000;
+  --color-blush: #edddd3;
+  --color-petal: #edddd3;
+  --color-gold: #000000;
+  --color-gold-deep: #000000;
+  --color-bone: #edddd3;
+  --color-sand: #edddd3;
+  --color-mist: #edddd3;
 
   --font-serif: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
   --font-sans: var(--font-inter), Inter, system-ui, sans-serif;
@@ -16,7 +16,7 @@
 }
 
 :root {
-  --tb-blush: #eddddd;
+  --tb-blush: #edddd3;
 }
 
 html {
@@ -24,9 +24,9 @@ html {
 }
 
 body {
-  background: #faf8f6;
-  color: #0a0a0a;
-  font-family: var(--font-inter), Inter, system-ui, sans-serif;
+  background: #edddd3;
+  color: #000000;
+  font-family: var(--font-sans), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -43,7 +43,6 @@ body {
   font-size: 0.68rem;
   letter-spacing: 0.42em;
   text-transform: uppercase;
-  color: #a8894f;
   font-weight: 500;
 }
 
@@ -57,7 +56,7 @@ body {
 .gold-rule {
   width: 56px;
   height: 1px;
-  background: linear-gradient(to right, #c7a86c, transparent);
+  background: #000000;
 }
 
 /* ---------- Reveal animations ---------- */

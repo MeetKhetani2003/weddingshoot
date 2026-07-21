@@ -15,11 +15,11 @@ export default function ContactPage() {
       <section className="bg-ink pb-24 pt-44 text-bone">
         <div className="mx-auto max-w-7xl px-6">
           <p className="fade-up eyebrow">Contact</p>
-          <p className="fade-up font-script mt-5 text-4xl text-gold" style={{ animationDelay: "0.15s" }}>
+          {/* <p className="fade-up font-script mt-5 text-4xl text-gold" style={{ animationDelay: "0.15s" }}>
             we'd love to hear from you
-          </p>
-          <h1 className="fade-up h-display mt-2 max-w-4xl text-4xl md:text-7xl" style={{ animationDelay: "0.3s" }}>
-            Begin your story with us
+          </p> */}
+          <h1 className="fade-up h-display mt-2 max-w-4xl text-4xl md:text-6xl" style={{ animationDelay: "0.3s" }}>
+            Begin your <span className="font-sans text-white  font-bold text-[0.8em] inline-block -translate-y-1 uppercase">Story</span> with us
           </h1>
         </div>
       </section>

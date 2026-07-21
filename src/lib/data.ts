@@ -280,7 +280,7 @@ export const services: Service[] = [
 export const highlights = [
   { label: "Wedding", image: "/1S6A3355.JPG", href: "/wedding-photography" },
   { label: "Pre Wedding", image: "/6.jpg", href: "/wedding-photography" },
-  { label: "Films", image: "/7.jpg", href: "/wedding-films" },
+  // { label: "Films", image: "/7.jpg", href: "/wedding-films" },
   { label: "Decor", image: "/8.jpg", href: "/wedding-decor" },
   { label: "Planning", image: "/9.jpg", href: "/wedding-planning" },
   { label: "Invitations", image: "/DSC-1288-Original Final copy.jpg", href: "/wedding-planning" },
@@ -294,11 +294,11 @@ export const highlights = [
 ];
 
 export const portfolio = [
-{ title: "Aisha & Veer", place: "Udaipur Palace Wedding", image: "/DSC_0603.JPG", tag: "Wedding" },
-  { title: "Meera & Kabir", place: "Goa Sunset Pheras", image: "/DSC_0635 copy.jpg", tag: "Destination" },
-  { title: "The Redveil Editorial", place: "Bridal Fine Art", image: "/DSC_0640.jpg", tag: "Photography" },
-  { title: "A Thousand Roses", place: "Reception Design, Delhi", image: "/DSC_0724.jpg", tag: "Decor" },
-  { title: "Sangeet Under Stars", place: "Jaipur", image: "/DSC_0726.jpg", tag: "Films" },
+  { title: "Aisha & Veer", place: "Udaipur Palace Wedding", image: "/DSC_0603.JPG", tag: "Wedding", images: ["/DSC_0603.JPG", "/DSC_1679.JPG", "/DSC_1725.JPG", "/DSC_4268.jpg"] },
+  { title: "Meera & Kabir", place: "Goa Sunset Pheras", image: "/DSC_0635 copy.jpg", tag: "Destination", images: ["/DSC_0635 copy.jpg", "/DSC_1682.JPG", "/DSC_4305.jpg", "/DSC_6117.JPG"] },
+  { title: "The Redveil Editorial", place: "Bridal Fine Art", image: "/DSC_0640.jpg", tag: "Photography", images: ["/DSC_0640.jpg", "/DSC_2463.JPG", "/DSC_2467.JPG", "/DSC_4316.jpg"] },
+  { title: "A Thousand Roses", place: "Reception Design, Delhi", image: "/DSC_0724.jpg", tag: "Decor", images: ["/DSC_0724.jpg", "/DSC_1770 copy.jpg", "/DSC_4440.jpg", "/DSC_6630.JPG"] },
+  { title: "Sangeet Under Stars", place: "Jaipur", image: "/DSC_0726.jpg", tag: "Films", images: ["/DSC_0726.jpg", "/DSC_2076 copy.jpg", "/DSC_5332.JPG", "/DSC_6633.JPG"] },
   { title: "Waiting for You", place: "Maternity Editorial", image: "/DSC_0838.JPG", tag: "Maternity" },
   { title: "Fourteen Days Old", place: "Newborn Session", image: "/DSC_0865.JPG", tag: "Newborn" },
   { title: "The Dhingra Family", place: "Family Portraits", image: "/DSC_0868.JPG", tag: "Family" },

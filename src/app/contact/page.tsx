@@ -41,7 +41,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <p className="eyebrow">Phone / WhatsApp</p>
-                  <a href="tel:+919810000000" className="h-display mt-2 block text-2xl hover:text-gold-deep transition-colors">
+                  <a href="tel:+919555419991" className="h-display mt-2 block text-2xl hover:text-gold-deep transition-colors">
                     {SITE.phone}
                   </a>
                 </div>

@@ -2,8 +2,8 @@ export const SITE = {
   name: "THE ETERNAL BLISS",
   tagline: "Creating Timeless Memories Since 2016",
   founder: "Garima Dhingra",
-  phone: "+91 98100 00000",
-  email: "hello@theeternalbliss.in",
+  phone: "+91-95554-19991",
+  email: "theeternalbliss8@gmail.com",
   instagram: "@theeternalbliss",
 };
 

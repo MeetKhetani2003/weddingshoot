@@ -25,6 +25,7 @@ const greatVibes = Great_Vibes({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://theeternalbliss.in"),
   title: {
     default: "The Eternal Bliss | Luxury Wedding Experiences Since 2016",
     template: "%s | The Eternal Bliss",

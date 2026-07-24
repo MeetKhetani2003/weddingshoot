@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { journal } from "@/lib/data";
+import { connectToDatabase } from "@/lib/mongodb";
+import Story from "@/models/Story";
 import { Reveal, GoldLink, SectionHeading } from "@/components/ui";
+
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: "Journal — Stories, Guides & Inspiration",
@@ -9,7 +12,11 @@ export const metadata: Metadata = {
     "The Eternal Bliss journal — destination wedding guides, planning wisdom, photography stories and inspiration from a decade of celebrations.",
 };
 
-export default function JournalPage() {
+export default async function JournalPage() {
+  await connectToDatabase();
+  const rawStories = await Story.find({}).sort({ createdAt: -1 }).lean();
+  const journal = JSON.parse(JSON.stringify(rawStories));
+
   return (
     <>
       <section className="bg-ink pb-24 pt-44 text-bone">
@@ -25,14 +32,17 @@ export default function JournalPage() {
       </section>
 
       <section className="mx-auto max-w-7xl px-6 py-24">
+        {journal.length === 0 && (
+          <p className="text-center text-bone/50 text-xl py-20">No stories found.</p>
+        )}
         <div className="grid gap-x-6 gap-y-16 md:grid-cols-3">
-          {journal.map((post, i) => (
+          {journal.map((post: any, i: number) => (
             <Reveal key={post.slug} delay={i * 120}>
               <Link href={`/journal/${post.slug}`} className="group block">
                 <div className="lux-img">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={post.image}
+                    src={`/api/images/${post.imageId}`}
                     alt={post.title}
                     className="aspect-[4/3] w-full object-cover"
                     loading="lazy"

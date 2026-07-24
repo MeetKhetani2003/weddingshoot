@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { connectToDatabase } from "@/lib/mongodb";
+import HomeConfig from "@/models/HomeConfig";
 
 import {
   Reveal,
@@ -58,26 +60,58 @@ async function getTestimonials() {
 
 export default async function HomePage() {
   const quotes = await getTestimonials();
+  
+  await connectToDatabase();
+  let config = await HomeConfig.findById("home").lean();
+  
+  if (!config) {
+    config = {
+      hero: {
+        subtitle: "Creating timeless memories",
+        title: "Where every celebration becomes",
+        titleHighlight: "\"Eternal\"",
+        imageIds: []
+      },
+      explore: {
+        layout: "carousel",
+        cardShape: "portrait",
+        spacing: "medium",
+        items: []
+      }
+    };
+  }
+
+  const heroImages = config.hero.imageIds.length > 0 
+    ? config.hero.imageIds.map((id: string) => `/api/images/${id}`)
+    : ["/DSC_0504.jpg", "/DSC_0635 copy.jpg", "/DSC_0724.jpg", "/1A7A1097.JPG"];
+
+  const exploreItems = config.explore.items.length > 0
+    ? config.explore.items.map((item: any) => ({
+        label: item.label,
+        href: item.href,
+        image: item.imageId ? `/api/images/${item.imageId}` : "/12.jpg"
+      }))
+    : highlights;
 
   return (
     <>
       {/* 1 — Cinematic Hero */}
       <section className="relative flex min-h-svh items-end overflow-hidden bg-ink">
         <div className="absolute inset-0">
-          <HeroCarousel />
+          <HeroCarousel images={heroImages} />
         </div>
         <div className="relative mx-auto w-full max-w-7xl px-6 pb-24 pt-40 md:pb-32">
           <p
             className="fade-up font-script mt-6 text-5xl text-bone md:text-6xl"
             style={{ animationDelay: "0.6s" }}
           >
-            Creating timeless memories
+            {config.hero.subtitle}
           </p>
           <h1
             className="fade-up h-display mt-2 max-w-5xl text-4xl text-bone md:text-6xl lg:text-7xl"
             style={{ animationDelay: "0.8s" }}
           >
-            Where every celebration becomes <span className="font-sans text-white  font-bold text-[0.9em] inline-block -translate-y-1 uppercase">"Eternal"</span>
+            {config.hero.title} <span className="font-sans text-white  font-bold text-[0.9em] inline-block -translate-y-1 uppercase">{config.hero.titleHighlight}</span>
           </h1>
           <div
             className="fade-up mt-10 flex flex-wrap items-center gap-6"
@@ -103,7 +137,16 @@ export default async function HomePage() {
         <section className="border-b border-ink/8 bg-bone py-16 md:py-24">
           <Reveal>
             <p className="eyebrow mb-12 text-center">Explore Our World</p>
-            <ExploreCards items={highlights} />
+            {exploreItems.length > 0 ? (
+              <ExploreCards 
+                items={exploreItems} 
+                layout={config.explore.layout}
+                cardShape={config.explore.cardShape}
+                spacing={config.explore.spacing}
+              />
+            ) : (
+              <p className="text-center text-ink/50 text-sm">No explore items configured yet.</p>
+            )}
           </Reveal>
         </section>
 

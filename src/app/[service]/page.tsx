@@ -3,6 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { services } from "@/lib/data";
 import { Reveal, SectionHeading, GoldLink, Breadcrumbs } from "@/components/ui";
+import { connectToDatabase } from "@/lib/mongodb";
+import HomeConfig from "@/models/HomeConfig";
 
 export function generateStaticParams() {
   return services.map((s) => ({ service: s.slug }));
@@ -36,22 +38,19 @@ export default async function ServicePage({
   const data = services.find((s) => s.slug === service);
   if (!data) notFound();
 
+  await connectToDatabase();
+  const config = await HomeConfig.findById("home").lean();
+  
+  // Find gallery images for this specific service
+  const exploreItem = config?.explore?.items?.find((item: any) => item.href === `/${service}`);
+  const galleryImageIds = exploreItem?.galleryImageIds || [];
+
   const idx = services.findIndex((s) => s.slug === service);
   const related = [
     services[(idx + 1) % services.length],
     services[(idx + 2) % services.length],
     services[(idx + 3) % services.length],
   ];
-
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: data.faqs.map((f) => ({
-      "@type": "Question",
-      name: f.q,
-      acceptedAnswer: { "@type": "Answer", text: f.a },
-    })),
-  };
 
   const breadcrumbSchema = {
     "@context": "https://schema.org",
@@ -64,10 +63,6 @@ export default async function ServicePage({
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
@@ -105,67 +100,35 @@ export default async function ServicePage({
         </div>
       </section>
 
-      {/* Intro + features */}
-      <section className="mx-auto max-w-7xl px-6 py-24 md:py-32">
-        <div className="grid gap-16 md:grid-cols-2">
-          <div>
-            <SectionHeading eyebrow="The Experience" title="What we craft for you" />
-            <Reveal delay={120}>
-              <p className="mt-8 text-lg leading-relaxed text-ink/70">{data.intro}</p>
-              <div className="mt-10">
-                <GoldLink href="/contact">Enquire About This Service</GoldLink>
-              </div>
-            </Reveal>
-          </div>
-          <Reveal delay={200}>
-            <ul className="divide-y divide-ink/10 border-y border-ink/10">
-              {data.features.map((f, i) => (
-                <li key={f} className="flex items-baseline gap-6 py-4">
-                  <span className="font-serif text-sm text-gold">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span className="h-display text-xl md:text-2xl">{f}</span>
-                </li>
-              ))}
-            </ul>
-          </Reveal>
-        </div>
+      {/* Intro */}
+      <section className="mx-auto max-w-4xl px-6 pt-24 pb-16 text-center">
+        <SectionHeading eyebrow="The Experience" title="What we craft for you" center />
+        <Reveal delay={120}>
+          <p className="mt-8 text-lg leading-relaxed text-ink/70">{data.intro}</p>
+        </Reveal>
       </section>
 
-      {/* Process */}
-      <section className="bg-ink py-24 text-bone md:py-32">
-        <div className="mx-auto max-w-7xl px-6">
-          <SectionHeading eyebrow="Our Approach" title="From vision to eternity" light />
-          <div className="mt-16 grid gap-10 md:grid-cols-4">
-            {data.process.map((p, i) => (
-              <Reveal key={p.step} delay={i * 120}>
-                <p className="h-display text-5xl text-gold/40">
-                  {String(i + 1).padStart(2, "0")}
-                </p>
-                <h3 className="h-display mt-4 text-2xl">{p.step}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-bone/60">{p.detail}</p>
+      {/* Dynamic Image Gallery */}
+      <section className="mx-auto max-w-7xl px-6 pb-32">
+        {galleryImageIds.length > 0 ? (
+          <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
+            {galleryImageIds.map((id: string, i: number) => (
+              <Reveal key={id} delay={(i % 3) * 100} className="break-inside-avoid">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={`/api/images/${id}`}
+                  alt={`${data.nav} gallery image`}
+                  className="w-full object-cover shadow-2xl hover:scale-[1.02] transition-transform duration-500 cursor-pointer border border-ink/5"
+                  loading="lazy"
+                />
               </Reveal>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section className="mx-auto max-w-4xl px-6 py-24 md:py-32">
-        <SectionHeading eyebrow="Questions" title="Frequently asked" center />
-        <div className="mt-14 space-y-4">
-          {data.faqs.map((f) => (
-            <Reveal key={f.q}>
-              <details className="faq group border border-ink/10 bg-white/60 px-8 py-6">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-6">
-                  <span className="h-display text-xl md:text-2xl">{f.q}</span>
-                  <span className="faq-icon text-2xl text-gold">+</span>
-                </summary>
-                <p className="mt-4 leading-relaxed text-ink/65">{f.a}</p>
-              </details>
-            </Reveal>
-          ))}
-        </div>
+        ) : (
+          <div className="text-center py-20 border border-dashed border-ink/20 bg-ink/5 rounded-sm">
+            <p className="text-ink/60 uppercase tracking-widest text-[0.65rem]">No gallery images yet. Add them in the Admin Panel.</p>
+          </div>
+        )}
       </section>
 
       {/* Related services */}
@@ -183,7 +146,7 @@ export default async function ServicePage({
                     <img
                       src={r.image}
                       alt={r.nav}
-                      className="aspect-[16/10] w-full object-cover"
+                      className="aspect-[4/5] w-full object-cover"
                       loading="lazy"
                     />
                   </div>

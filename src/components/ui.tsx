@@ -129,43 +129,67 @@ export function Marquee({ items, light = false }: { items: string[]; light?: boo
 /* ---------------- Editorial Portrait Cards ---------------- */
 export function ExploreCards({
   items,
+  layout = "carousel",
+  cardShape = "portrait",
+  spacing = "medium",
 }: {
   items: { label: string; image: string; href: string }[];
+  layout?: "carousel" | "grid";
+  cardShape?: "portrait" | "square" | "landscape" | "circle";
+  spacing?: "small" | "medium" | "large";
 }) {
   const [emblaRef] = useEmblaCarousel({
     align: "start",
     containScroll: "trimSnaps",
     dragFree: true,
+    active: layout === "carousel"
   });
+
+  const gapClass = spacing === "small" ? "gap-2 md:gap-4" : spacing === "large" ? "gap-6 md:gap-10" : "gap-4 md:gap-6";
+  
+  const shapeClass = cardShape === "circle" ? "aspect-square rounded-full" : cardShape === "square" ? "aspect-square" : cardShape === "landscape" ? "aspect-[4/3]" : "aspect-[4/5]";
+  const widthClass = layout === "carousel" ? (cardShape === "landscape" ? "w-72 md:w-96" : "w-64 md:w-72") : "w-full";
+
+  const renderCard = (h: { label: string; image: string; href: string }) => (
+    <Link
+      key={h.label}
+      href={h.href}
+      className={`group relative flex flex-col overflow-hidden ${shapeClass} ${widthClass} ${layout === "carousel" ? "shrink-0" : ""}`}
+      draggable={false}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={h.image}
+        alt={h.label}
+        className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105 pointer-events-none"
+        loading="lazy"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/20 to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-100 pointer-events-none" />
+      <div className="absolute bottom-6 left-6 right-6 pointer-events-none">
+        <span className="block text-xs uppercase tracking-[0.3em] text-bone mb-2 opacity-80 transition-opacity duration-500 group-hover:opacity-100">
+          Explore
+        </span>
+        <span className="block h-display text-2xl text-bone transition-transform duration-500 group-hover:translate-x-1">
+          {h.label}
+        </span>
+      </div>
+    </Link>
+  );
+
+  if (layout === "grid") {
+    return (
+      <div className="w-full px-6">
+        <div className={`grid grid-cols-2 md:grid-cols-4 ${gapClass}`}>
+          {items.map(renderCard)}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="overflow-hidden w-full px-6" ref={emblaRef}>
-      <div className="flex gap-4 md:gap-6 touch-pan-y cursor-grab active:cursor-grabbing">
-        {items.map((h) => (
-          <Link
-            key={h.label}
-            href={h.href}
-            className="group relative flex shrink-0 flex-col overflow-hidden w-64 h-[24rem] md:w-72 md:h-[30rem]"
-            draggable={false}
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={h.image}
-              alt={h.label}
-              className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105 pointer-events-none"
-              loading="lazy"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/20 to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-100 pointer-events-none" />
-            <div className="absolute bottom-6 left-6 right-6 pointer-events-none">
-              <span className="block text-xs uppercase tracking-[0.3em] text-bone mb-2 opacity-80 transition-opacity duration-500 group-hover:opacity-100">
-                Explore
-              </span>
-              <span className="block h-display text-2xl text-bone transition-transform duration-500 group-hover:translate-x-1">
-                {h.label}
-              </span>
-            </div>
-          </Link>
-        ))}
+      <div className={`flex ${gapClass} touch-pan-y cursor-grab active:cursor-grabbing`}>
+        {items.map(renderCard)}
       </div>
     </div>
   );

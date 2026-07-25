@@ -4,8 +4,8 @@
   --color-ink: #000000;
   --color-blush: #edddd3;
   --color-petal: #edddd3;
-  --color-gold: #000000;
-  --color-gold-deep: #000000;
+  --color-gold: #c5a880;
+  --color-gold-deep: #a6833b;
   --color-bone: #edddd3;
   --color-sand: #edddd3;
   --color-mist: #edddd3;
@@ -56,7 +56,7 @@ body {
 .gold-rule {
   width: 56px;
   height: 1px;
-  background: #000000;
+  background: #c5a880;
 }
 
 /* ---------- Reveal animations ---------- */

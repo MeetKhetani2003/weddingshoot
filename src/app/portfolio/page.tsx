@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { connectToDatabase } from "@/lib/mongodb";
 import Portfolio from "@/models/Portfolio";
 import { Reveal, SectionHeading, GoldLink } from "@/components/ui";
+import PortfolioGallery from "@/components/PortfolioGallery";
 
 export const dynamic = 'force-dynamic';
 
@@ -31,35 +32,7 @@ export default async function PortfolioPage() {
       </section>
 
       <section className="mx-auto max-w-7xl px-6 py-24">
-        {portfolio.length === 0 && (
-          <p className="text-center text-bone/50 text-xl py-20">No portfolio images found.</p>
-        )}
-        <div className="grid gap-x-6 gap-y-14 md:grid-cols-2 lg:grid-cols-3">
-          {portfolio.map((p: any, i: number) => (
-            <Reveal key={p._id + i} delay={(i % 3) * 100}>
-              <article className="group">
-                <div className="lux-img">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={`/api/images/${p.imageId}`}
-                    alt={`${p.title} — ${p.place}`}
-                    className={`w-full object-cover ${
-                      i % 4 === 0 ? "aspect-[4/5]" : i % 4 === 1 ? "aspect-square" : "aspect-[4/5]"
-                    }`}
-                    loading="lazy"
-                  />
-                </div>
-                <div className="mt-5 flex items-baseline justify-between gap-4">
-                  <h2 className="h-display text-2xl">{p.title}</h2>
-                  <span className="shrink-0 text-[0.6rem] uppercase tracking-[0.3em] text-gold">
-                    {p.tag}
-                  </span>
-                </div>
-                <p className="mt-1 text-sm text-ink/50">{p.place}</p>
-              </article>
-            </Reveal>
-          ))}
-        </div>
+        <PortfolioGallery items={portfolio} />
       </section>
 
       <section className="bg-petal/50 py-24 text-center">

@@ -5,8 +5,6 @@ const explore = [
   { label: "About", href: "/about" },
   { label: "Our Story", href: "/our-story" },
   { label: "Portfolio", href: "/portfolio" },
-  { label: "Packages", href: "/packages" },
-  { label: "Journal", href: "/journal" },
   { label: "Testimonials", href: "/testimonials" },
   { label: "Contact", href: "/contact" },
 ];

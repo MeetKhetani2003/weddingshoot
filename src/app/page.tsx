@@ -167,8 +167,8 @@ export default async function HomePage() {
               light
             />
             <Reveal delay={200}>
-              <GoldLink href="/packages" dark>
-                Explore Packages
+              <GoldLink href="/contact" dark>
+                Get in Touch
               </GoldLink>
             </Reveal>
           </div>

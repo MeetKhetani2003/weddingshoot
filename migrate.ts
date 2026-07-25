@@ -1,8 +1,7 @@
 import { connectToDatabase } from "./src/lib/mongodb";
 import Category from "./src/models/Category";
 import Portfolio from "./src/models/Portfolio";
-import Story from "./src/models/Story";
-import { portfolio, journal } from "./src/lib/data";
+import { portfolio } from "./src/lib/data";
 import fs from "fs";
 import path from "path";
 import dotenv from "dotenv";
@@ -37,8 +36,7 @@ async function migrate() {
   // Categories
   console.log("Extracting and creating categories...");
   const categoryNames = new Set([
-    ...portfolio.map(p => p.tag),
-    ...journal.map(j => j.category)
+    ...portfolio.map(p => p.tag)
   ]);
 
   const categoryMap = new Map();
@@ -79,34 +77,6 @@ async function migrate() {
       imageId
     });
     console.log(`Migrated portfolio: ${p.title}`);
-  }
-
-  // Journal (Stories)
-  console.log("Migrating stories...");
-  for (const j of journal) {
-    if (!j.title || !j.image) continue;
-    const existing = await Story.findOne({ slug: j.slug });
-    if (existing) {
-      console.log(`Skipping story (already exists): ${j.title}`);
-      continue;
-    }
-
-    const imageId = await uploadImage(j.image);
-    if (!imageId) {
-      console.log(`Skipping story due to missing image: ${j.title}`);
-      continue;
-    }
-
-    await Story.create({
-      title: j.title,
-      slug: j.slug,
-      excerpt: j.excerpt,
-      date: j.date,
-      category: j.category,
-      body: j.body,
-      imageId
-    });
-    console.log(`Migrated story: ${j.title}`);
   }
 
   console.log("Migration complete");

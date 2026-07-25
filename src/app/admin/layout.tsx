@@ -14,7 +14,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <Link href="/admin/home" className="hover:text-bone/70 transition-colors">Homepage Settings</Link>
           <Link href="/admin/categories" className="hover:text-bone/70 transition-colors">Categories</Link>
           <Link href="/admin/portfolio" className="hover:text-bone/70 transition-colors">Portfolio Images</Link>
-          <Link href="/admin/stories" className="hover:text-bone/70 transition-colors">Wedding Stories</Link>
           
           <div className="mt-12 pt-12 border-t border-bone/10">
             <Link href="/" className="text-sm text-bone/50 hover:text-bone block">Back to Site</Link>

@@ -9,8 +9,6 @@ const links = [
   { label: "About", href: "/about" },
   { label: "Our Story", href: "/our-story" },
   { label: "Portfolio", href: "/portfolio" },
-  { label: "Packages", href: "/packages" },
-  { label: "Journal", href: "/journal" },
   { label: "Testimonials", href: "/testimonials" },
   { label: "Contact", href: "/contact" },
 ];
@@ -61,14 +59,22 @@ export default function Nav() {
           {/* Left Side */}
           <div className="flex flex-1 justify-start">
             <nav className="hidden items-center gap-5 xl:gap-8 lg:flex">
-              {["/", "/about", "/portfolio"].map((href) => {
+              {["/", "/about", "/our-story"].map((href) => {
                 const link = links.find((l) => l.href === href)!;
+                const isActive = pathname === href;
                 return (
                   <Link
                     key={href}
                     href={href}
-                    className={`link-underline text-[0.68rem] uppercase tracking-[0.3em] transition-colors whitespace-nowrap ${dark ? "text-ink/80 hover:text-ink" : "text-bone/85 hover:text-bone"
-                      } ${pathname === href ? "text-gold" : ""}`}
+                    className={`link-underline text-[0.68rem] uppercase tracking-[0.3em] transition-colors whitespace-nowrap ${
+                      isActive
+                        ? dark
+                          ? "text-gold-deep font-semibold"
+                          : "text-gold font-semibold"
+                        : dark
+                        ? "text-ink/80 hover:text-ink"
+                        : "text-bone/85 hover:text-bone"
+                    }`}
                   >
                     {link.label}
                   </Link>
@@ -98,14 +104,22 @@ export default function Nav() {
           {/* Right Side */}
           <div className="flex flex-1 justify-end items-center gap-5 xl:gap-8">
             <nav className="hidden items-center gap-5 xl:gap-8 lg:flex">
-              {["/packages", "/journal", "/contact"].map((href) => {
+              {["/portfolio", "/testimonials", "/contact"].map((href) => {
                 const link = links.find((l) => l.href === href)!;
+                const isActive = pathname === href;
                 return (
                   <Link
                     key={href}
                     href={href}
-                    className={`link-underline text-[0.68rem] uppercase tracking-[0.3em] transition-colors whitespace-nowrap ${dark ? "text-ink/80 hover:text-ink" : "text-bone/85 hover:text-bone"
-                      } ${pathname === href ? "text-gold" : ""}`}
+                    className={`link-underline text-[0.68rem] uppercase tracking-[0.3em] transition-colors whitespace-nowrap ${
+                      isActive
+                        ? dark
+                          ? "text-gold-deep font-semibold"
+                          : "text-gold font-semibold"
+                        : dark
+                        ? "text-ink/80 hover:text-ink"
+                        : "text-bone/85 hover:text-bone"
+                    }`}
                   >
                     {link.label}
                   </Link>
@@ -144,21 +158,26 @@ export default function Nav() {
           <div>
             <p className="eyebrow mb-6">Explore</p>
             <ul className="space-y-3">
-              {links.map((l, i) => (
-                <li
-                  key={l.href}
-                  style={{ transitionDelay: `${i * 40}ms` }}
-                  className={`transition-all duration-700 ${open ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
-                    }`}
-                >
-                  <Link
-                    href={l.href}
-                    className="h-display text-3xl text-bone/85 transition-colors hover:text-gold md:text-5xl"
+              {links.map((l, i) => {
+                const isActive = pathname === l.href;
+                return (
+                  <li
+                    key={l.href}
+                    style={{ transitionDelay: `${i * 40}ms` }}
+                    className={`transition-all duration-700 ${open ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
+                      }`}
                   >
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
+                    <Link
+                      href={l.href}
+                      className={`h-display text-3xl transition-colors md:text-5xl ${
+                        isActive ? "text-gold font-medium" : "text-bone/85 hover:text-gold"
+                      }`}
+                    >
+                      {l.label}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </div>
           <div>

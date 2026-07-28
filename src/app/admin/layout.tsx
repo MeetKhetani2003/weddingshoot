@@ -12,6 +12,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <h2 className="text-xl font-script text-bone">Admin Panel</h2>
         <nav className="flex flex-col gap-4 mt-8">
           <Link href="/admin/home" className="hover:text-bone/70 transition-colors">Homepage Settings</Link>
+          <Link href="/admin/featured" className="hover:text-bone/70 transition-colors">Featured Gallery</Link>
           <Link href="/admin/categories" className="hover:text-bone/70 transition-colors">Categories</Link>
           <Link href="/admin/portfolio" className="hover:text-bone/70 transition-colors">Portfolio Images</Link>
           

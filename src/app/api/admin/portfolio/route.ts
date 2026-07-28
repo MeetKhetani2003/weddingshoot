@@ -23,6 +23,7 @@ export async function POST(request: Request) {
     const place = formData.get("place") as string;
     const categoryId = formData.get("categoryId") as string;
     const image = formData.get("image") as File;
+    const orientation = (formData.get("orientation") as string) || "auto";
 
     if (!title || !place || !categoryId || !image) {
       return NextResponse.json({ error: "All fields are required" }, { status: 400 });
@@ -56,7 +57,8 @@ export async function POST(request: Request) {
       place,
       tag,
       categoryId,
-      imageId
+      imageId,
+      orientation,
     });
 
     return NextResponse.json(portfolioItem, { status: 201 });

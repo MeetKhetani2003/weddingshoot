@@ -161,13 +161,23 @@ export default async function ServicePage({
       </section>
 
       {/* CTA */}
-      <section className="bg-ink py-24 text-center text-bone">
-        <Reveal className="mx-auto max-w-2xl px-6">
-          <p className="font-script text-4xl text-gold">shall we begin?</p>
-          <h2 className="h-display mt-4 text-3xl md:text-5xl">
+      <section className="relative overflow-hidden bg-ink py-16 text-center text-bone md:py-20">
+        <div className="absolute inset-0 z-0">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/10.jpg"
+            alt="Luxury Celebration"
+            className="h-full w-full object-cover opacity-35 scale-105"
+            loading="lazy"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-ink/90 via-ink/80 to-ink/90" />
+        </div>
+        <Reveal className="relative z-10 mx-auto max-w-2xl px-6">
+          <p className="font-script text-3xl text-gold">shall we begin?</p>
+          <h2 className="h-display mt-2 text-3xl md:text-5xl">
             Your celebration deserves The Eternal Bliss
           </h2>
-          <div className="mt-10 flex justify-center">
+          <div className="mt-8 flex justify-center">
             <GoldLink href="/contact" dark>
               Begin the Conversation
             </GoldLink>

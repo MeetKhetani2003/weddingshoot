@@ -1,28 +1,10 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { Marcellus, Nunito_Sans, Great_Vibes } from "next/font/google";
 import "./globals.css";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import SmoothScroll from "@/components/SmoothScroll";
 import WhatsAppButton from "@/components/WhatsAppButton";
-
-const marcellus = Marcellus({
-  subsets: ["latin"],
-  weight: "400",
-  variable: "--font-cormorant", // Keep the same variable name to avoid touching globals.css and Tailwind classes unnecessarily
-});
-
-const nunito = Nunito_Sans({
-  subsets: ["latin"],
-  variable: "--font-inter",
-});
-
-const greatVibes = Great_Vibes({
-  subsets: ["latin"],
-  weight: "400",
-  variable: "--font-greatvibes",
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://theeternalbliss.in"),
@@ -61,7 +43,7 @@ const orgSchema = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className={`${marcellus.variable} ${nunito.variable} ${greatVibes.variable}`}>
+    <html lang="en">
       <body className="bg-bone text-ink antialiased">
         <script
           type="application/ld+json"

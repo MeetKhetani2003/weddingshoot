@@ -6,6 +6,7 @@ export interface IPortfolio extends Document {
   tag: string;
   categoryId: Types.ObjectId;
   imageId: string;
+  orientation?: 'vertical' | 'horizontal' | 'auto';
 }
 
 const PortfolioSchema: Schema = new Schema({
@@ -14,6 +15,7 @@ const PortfolioSchema: Schema = new Schema({
   tag: { type: String, required: true }, 
   categoryId: { type: Schema.Types.ObjectId, ref: 'Category', required: true },
   imageId: { type: String, required: true },
+  orientation: { type: String, enum: ["vertical", "horizontal", "auto"], default: "auto" },
 }, { timestamps: true });
 
 export default mongoose.models.Portfolio || mongoose.model<IPortfolio>('Portfolio', PortfolioSchema);

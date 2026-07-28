@@ -1,5 +1,39 @@
 @import "tailwindcss";
 
+/* ----------------------------------------------------
+   EXCLUSIVE FONT SYSTEM
+   1. Avenir (Body Text)
+   2. Romelio Sans Font (Headings)
+   3. Brittany Font (Highlights)
+---------------------------------------------------- */
+
+@font-face {
+  font-family: 'Avenir';
+  src: url('/fonts/avenir.woff') format('woff'),
+       url('https://fonts.cdnfonts.com/s/71748/avenir_roman_12.woff') format('woff');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Romelio Sans';
+  src: url('/fonts/romeliosans.woff') format('woff'),
+       url('https://fonts.cdnfonts.com/s/47365/Romeliosans-jE1Dy.woff') format('woff');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Brittany Signature';
+  src: url('/fonts/brittany.woff') format('woff'),
+       url('https://fonts.cdnfonts.com/s/39082/BrittanySignature-LjyZ.woff') format('woff');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
   --color-ink: #000000;
   --color-blush: #edddd3;
@@ -10,32 +44,57 @@
   --color-sand: #edddd3;
   --color-mist: #edddd3;
 
-  --font-serif: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
-  --font-sans: var(--font-inter), Inter, system-ui, sans-serif;
-  --font-script: var(--font-script), "Great Vibes", cursive;
+  --font-serif: 'Romelio Sans', 'Romelio', sans-serif;
+  --font-sans: 'Avenir', 'Avenir Next', sans-serif;
+  --font-script: 'Brittany Signature', 'Brittany', cursive;
 }
 
 :root {
   --tb-blush: #edddd3;
+  --font-avenir: 'Avenir', 'Avenir Next', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-romelio: 'Romelio Sans', 'Romelio', sans-serif;
+  --font-brittany: 'Brittany Signature', 'Brittany', cursive;
+
+  /* CSS Variable Fallbacks */
+  --font-cormorant: var(--font-romelio);
+  --font-inter: var(--font-avenir);
+  --font-greatvibes: var(--font-brittany);
 }
 
 html {
   scroll-behavior: smooth;
+  font-family: var(--font-avenir);
 }
 
 body {
   background: #edddd3;
   color: #000000;
-  font-family: var(--font-sans), system-ui, sans-serif;
+  font-family: var(--font-avenir);
   -webkit-font-smoothing: antialiased;
 }
 
-.font-serif {
-  font-family: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
+/* Headings: Romelio Sans Font */
+h1, h2, h3, h4, h5, h6, .font-serif, .font-heading, .h-display {
+  font-family: var(--font-romelio) !important;
 }
 
-.font-script {
-  font-family: var(--font-greatvibes), "Great Vibes", cursive;
+/* Highlights: Brittany Font */
+.font-script, .font-highlight, .highlight, .script-text {
+  font-family: var(--font-brittany) !important;
+}
+
+/* Body Text: Avenir */
+body, p, span, a, button, input, textarea, select, label, li, td, th, div, .font-sans {
+  font-family: var(--font-avenir);
+}
+
+/* Re-enforce explicit heading & highlight modifiers */
+p.font-serif, span.font-serif, a.font-serif, div.font-serif, h1.font-serif, h2.font-serif, h3.font-serif, h4.font-serif, h5.font-serif, h6.font-serif {
+  font-family: var(--font-romelio) !important;
+}
+
+p.font-script, span.font-script, a.font-script, div.font-script, h1.font-script, h2.font-script, h3.font-script, h4.font-script, span.font-highlight {
+  font-family: var(--font-brittany) !important;
 }
 
 /* ---------- Editorial helpers ---------- */

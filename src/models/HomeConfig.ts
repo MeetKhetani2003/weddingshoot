@@ -16,6 +16,7 @@ export interface IHomeConfig extends Document<string> {
       label: string;
       href: string;
       imageId: string;
+      orientation?: 'vertical' | 'horizontal' | 'auto';
       galleryImageIds?: string[];
     }[];
   };
@@ -37,6 +38,7 @@ const HomeConfigSchema = new Schema({
       label: String,
       href: String,
       imageId: String,
+      orientation: { type: String, enum: ["vertical", "horizontal", "auto"], default: "auto" },
       galleryImageIds: [{ type: String }]
     }]
   }

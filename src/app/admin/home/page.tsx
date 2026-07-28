@@ -6,6 +6,13 @@ export default function HomeConfigPage() {
   const [config, setConfig] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
+
+  // Wrap setConfig so any change marks the page as dirty
+  const updateConfig = (newConfig: any) => {
+    setConfig(newConfig);
+    setIsDirty(true);
+  };
 
   useEffect(() => {
     fetch("/api/admin/home-config")
@@ -30,7 +37,7 @@ export default function HomeConfigPage() {
     
     if (res.ok) {
       const { imageId } = await res.json();
-      setConfig({
+      updateConfig({
         ...config,
         hero: {
           ...config.hero,
@@ -43,7 +50,7 @@ export default function HomeConfigPage() {
   const removeHeroImage = (index: number) => {
     const newImages = [...config.hero.imageIds];
     newImages.splice(index, 1);
-    setConfig({
+    updateConfig({
       ...config,
       hero: { ...config.hero, imageIds: newImages }
     });
@@ -65,7 +72,7 @@ export default function HomeConfigPage() {
       const { imageId } = await res.json();
       const newItems = [...config.explore.items];
       newItems[index].imageId = imageId;
-      setConfig({
+      updateConfig({
         ...config,
         explore: { ...config.explore, items: newItems }
       });
@@ -88,7 +95,7 @@ export default function HomeConfigPage() {
       const { imageId } = await res.json();
       const newItems = [...config.explore.items];
       newItems[index].galleryImageIds = [...(newItems[index].galleryImageIds || []), imageId];
-      setConfig({
+      updateConfig({
         ...config,
         explore: { ...config.explore, items: newItems }
       });
@@ -98,14 +105,14 @@ export default function HomeConfigPage() {
   const removeExploreGalleryImage = (itemIndex: number, imgIndex: number) => {
     const newItems = [...config.explore.items];
     newItems[itemIndex].galleryImageIds.splice(imgIndex, 1);
-    setConfig({
+    updateConfig({
       ...config,
       explore: { ...config.explore, items: newItems }
     });
   };
 
   const addExploreItem = () => {
-    setConfig({
+    updateConfig({
       ...config,
       explore: {
         ...config.explore,
@@ -117,7 +124,7 @@ export default function HomeConfigPage() {
   const updateExploreItem = (index: number, field: string, value: string) => {
     const newItems = [...config.explore.items];
     newItems[index] = { ...newItems[index], [field]: value };
-    setConfig({
+    updateConfig({
       ...config,
       explore: { ...config.explore, items: newItems }
     });
@@ -126,7 +133,7 @@ export default function HomeConfigPage() {
   const removeExploreItem = (index: number) => {
     const newItems = [...config.explore.items];
     newItems.splice(index, 1);
-    setConfig({
+    updateConfig({
       ...config,
       explore: { ...config.explore, items: newItems }
     });
@@ -140,21 +147,34 @@ export default function HomeConfigPage() {
       body: JSON.stringify(config)
     });
     setSaving(false);
-    alert("Saved successfully!");
+    setIsDirty(false);
   };
 
   if (loading) return <div className="text-bone">Loading...</div>;
 
   return (
-    <div className="max-w-5xl mx-auto space-y-12 pb-24">
+    <div className="max-w-5xl mx-auto space-y-12 pb-32">
+      {/* ── Top header with Save button ── */}
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl h-display">Homepage Settings</h1>
+        <div>
+          <h1 className="text-3xl h-display">Homepage Settings</h1>
+          {isDirty && (
+            <p className="text-xs text-amber-400 mt-1 flex items-center gap-1.5">
+              <span className="inline-block w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+              Unsaved changes
+            </p>
+          )}
+        </div>
         <button 
           onClick={handleSave} 
-          disabled={saving}
-          className="bg-bone text-ink px-8 py-3 uppercase text-xs tracking-widest hover:bg-bone/80 transition-colors font-bold"
+          disabled={saving || !isDirty}
+          className={`px-8 py-3 uppercase text-xs tracking-widest font-bold transition-all duration-200
+            ${isDirty
+              ? "bg-bone text-ink hover:bg-bone/80 shadow-lg shadow-bone/20"
+              : "bg-bone/20 text-bone/40 cursor-not-allowed"
+            }`}
         >
-          {saving ? "Saving..." : "Save Changes"}
+          {saving ? "Saving..." : isDirty ? "Save Changes" : "Saved ✓"}
         </button>
       </div>
       
@@ -168,7 +188,7 @@ export default function HomeConfigPage() {
             <input 
               type="text" 
               value={config.hero.subtitle} 
-              onChange={e => setConfig({ ...config, hero: { ...config.hero, subtitle: e.target.value } })}
+              onChange={e => updateConfig({ ...config, hero: { ...config.hero, subtitle: e.target.value } })}
               className="w-full bg-black/50 border border-bone/20 p-2 text-bone outline-none" 
             />
           </div>
@@ -177,7 +197,7 @@ export default function HomeConfigPage() {
             <input 
               type="text" 
               value={config.hero.title} 
-              onChange={e => setConfig({ ...config, hero: { ...config.hero, title: e.target.value } })}
+              onChange={e => updateConfig({ ...config, hero: { ...config.hero, title: e.target.value } })}
               className="w-full bg-black/50 border border-bone/20 p-2 text-bone outline-none" 
             />
           </div>
@@ -186,7 +206,7 @@ export default function HomeConfigPage() {
             <input 
               type="text" 
               value={config.hero.titleHighlight} 
-              onChange={e => setConfig({ ...config, hero: { ...config.hero, titleHighlight: e.target.value } })}
+              onChange={e => updateConfig({ ...config, hero: { ...config.hero, titleHighlight: e.target.value } })}
               className="w-full bg-black/50 border border-bone/20 p-2 text-bone outline-none" 
             />
           </div>
@@ -222,7 +242,7 @@ export default function HomeConfigPage() {
             <label className="block text-xs uppercase tracking-widest text-bone mb-2">Layout Mode</label>
             <select 
               value={config.explore.layout}
-              onChange={e => setConfig({ ...config, explore: { ...config.explore, layout: e.target.value } })}
+              onChange={e => updateConfig({ ...config, explore: { ...config.explore, layout: e.target.value } })}
               className="w-full bg-black/50 border border-bone/20 p-2 text-bone outline-none"
             >
               <option value="carousel">Swipe Carousel</option>
@@ -233,7 +253,7 @@ export default function HomeConfigPage() {
             <label className="block text-xs uppercase tracking-widest text-bone mb-2">Card Shape</label>
             <select 
               value={config.explore.cardShape}
-              onChange={e => setConfig({ ...config, explore: { ...config.explore, cardShape: e.target.value } })}
+              onChange={e => updateConfig({ ...config, explore: { ...config.explore, cardShape: e.target.value } })}
               className="w-full bg-black/50 border border-bone/20 p-2 text-bone outline-none"
             >
               <option value="portrait">Portrait</option>
@@ -246,7 +266,7 @@ export default function HomeConfigPage() {
             <label className="block text-xs uppercase tracking-widest text-bone mb-2">Spacing</label>
             <select 
               value={config.explore.spacing}
-              onChange={e => setConfig({ ...config, explore: { ...config.explore, spacing: e.target.value } })}
+              onChange={e => updateConfig({ ...config, explore: { ...config.explore, spacing: e.target.value } })}
               className="w-full bg-black/50 border border-bone/20 p-2 text-bone outline-none"
             >
               <option value="small">Small</option>
@@ -276,7 +296,7 @@ export default function HomeConfigPage() {
                     <input type="file" accept="image/*" onChange={(e) => handleExploreItemUpload(i, e)} className="absolute inset-0 opacity-0 cursor-pointer" />
                   </div>
                   
-                  <div className="flex-1 grid grid-cols-2 gap-4">
+                  <div className="flex-1 grid grid-cols-3 gap-4">
                     <div>
                       <label className="block text-[10px] uppercase tracking-widest text-bone/50 mb-1">Label (e.g. Wedding Photography)</label>
                       <input type="text" value={item.label} onChange={e => updateExploreItem(i, "label", e.target.value)} className="w-full bg-black/50 border border-bone/20 p-2 text-bone outline-none text-sm" placeholder="e.g. Wedding" />
@@ -284,6 +304,18 @@ export default function HomeConfigPage() {
                     <div>
                       <label className="block text-[10px] uppercase tracking-widest text-bone/50 mb-1">Link URL</label>
                       <input type="text" value={item.href} onChange={e => updateExploreItem(i, "href", e.target.value)} className="w-full bg-black/50 border border-bone/20 p-2 text-bone outline-none text-sm" placeholder="/wedding-photography" />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] uppercase tracking-widest text-bone/50 mb-1">Orientation</label>
+                      <select 
+                        value={item.orientation || "auto"} 
+                        onChange={e => updateExploreItem(i, "orientation", e.target.value)} 
+                        className="w-full bg-black/50 border border-bone/20 p-2 text-bone outline-none text-sm"
+                      >
+                        <option value="auto">⚡ Auto-Detect</option>
+                        <option value="vertical">📱 Vertical (Portrait)</option>
+                        <option value="horizontal">🖥️ Horizontal (Landscape)</option>
+                      </select>
                     </div>
                   </div>
                   
@@ -336,6 +368,44 @@ export default function HomeConfigPage() {
           )}
         </div>
       </section>
+
+      {/* ── Sticky floating save bar (appears only when there are unsaved changes) ── */}
+      <div
+        className={`fixed bottom-0 left-64 right-0 z-50 transition-all duration-300 ${
+          isDirty ? "translate-y-0 opacity-100" : "translate-y-full opacity-0 pointer-events-none"
+        }`}
+      >
+        <div className="bg-zinc-950 border-t border-bone/20 px-10 py-4 flex items-center justify-between shadow-2xl">
+          <div className="flex items-center gap-3">
+            <span className="inline-block w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+            <span className="text-sm text-bone/70">You have unsaved changes</span>
+          </div>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => { setConfig(null); setIsDirty(false); setLoading(true); 
+                fetch("/api/admin/home-config").then(r => r.json()).then(d => { setConfig(d); setLoading(false); }); }}
+              className="text-xs uppercase tracking-widest text-bone/50 hover:text-bone transition-colors px-4 py-2 border border-bone/20 hover:border-bone/40"
+            >
+              Discard
+            </button>
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="bg-bone text-ink px-8 py-2.5 uppercase text-xs tracking-widest font-bold hover:bg-bone/90 transition-colors shadow-lg shadow-bone/20"
+            >
+              {saving ? (
+                <span className="flex items-center gap-2">
+                  <svg className="animate-spin h-3 w-3" viewBox="0 0 24 24" fill="none">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                  </svg>
+                  Saving...
+                </span>
+              ) : "Save Changes"}
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

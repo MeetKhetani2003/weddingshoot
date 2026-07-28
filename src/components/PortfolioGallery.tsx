@@ -9,6 +9,78 @@ interface PortfolioItem {
   place: string;
   tag: string;
   imageId: string;
+  orientation?: 'vertical' | 'horizontal' | 'auto';
+}
+
+/* ---------- Single portfolio card — extracted to fix Rules of Hooks ---------- */
+function PortfolioCard({
+  item: p,
+  index: i,
+  onOpen,
+}: {
+  item: PortfolioItem;
+  index: number;
+  onOpen: (index: number) => void;
+}) {
+  const [orientation, setOrientation] = useState<"vertical" | "horizontal">(
+    p.orientation === "horizontal"
+      ? "horizontal"
+      : p.orientation === "vertical"
+      ? "vertical"
+      : "vertical"
+  );
+
+  const isHorizontal = orientation === "horizontal";
+
+  return (
+    <Reveal
+      delay={(i % 3) * 100}
+      className={isHorizontal ? "col-span-1 md:col-span-2" : "col-span-1"}
+    >
+      <article
+        onClick={() => onOpen(i)}
+        className="group cursor-pointer"
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => e.key === "Enter" && onOpen(i)}
+        aria-label={`View ${p.title}`}
+      >
+        <div className="lux-img relative overflow-hidden rounded-sm bg-ink/5">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={`/api/images/${p.imageId}`}
+            alt={`${p.title} — ${p.place}`}
+            onLoad={(e) => {
+              if (!p.orientation || p.orientation === "auto") {
+                const img = e.currentTarget;
+                if (img.naturalWidth > img.naturalHeight * 1.1) {
+                  setOrientation("horizontal");
+                } else {
+                  setOrientation("vertical");
+                }
+              }
+            }}
+            className={`w-full object-cover transition-transform duration-700 group-hover:scale-105 ${
+              isHorizontal ? "aspect-[16/9] md:aspect-[16/10]" : "aspect-[4/5]"
+            }`}
+            loading="lazy"
+          />
+          <div className="absolute inset-0 bg-ink/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+            <span className="bg-bone/90 backdrop-blur-md text-ink px-4 py-2 text-[0.6rem] uppercase tracking-[0.3em]">
+              Click to View
+            </span>
+          </div>
+        </div>
+        <div className="mt-5 flex items-baseline justify-between gap-4">
+          <h2 className="h-display text-2xl group-hover:text-gold transition-colors">{p.title}</h2>
+          <span className="shrink-0 text-[0.6rem] uppercase tracking-[0.3em] text-gold">
+            {p.tag}
+          </span>
+        </div>
+        <p className="mt-1 text-sm text-ink/50">{p.place}</p>
+      </article>
+    </Reveal>
+  );
 }
 
 export default function PortfolioGallery({ items }: { items: PortfolioItem[] }) {
@@ -171,42 +243,9 @@ export default function PortfolioGallery({ items }: { items: PortfolioItem[] }) 
       {filteredItems.length === 0 ? (
         <p className="text-center text-ink/50 text-xl py-20">No images found in this collection.</p>
       ) : (
-        <div className="grid gap-x-6 gap-y-14 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-x-6 gap-y-14 md:grid-cols-2 lg:grid-cols-3 items-start">
           {filteredItems.map((p, i) => (
-            <Reveal key={p._id || i} delay={(i % 3) * 100}>
-              <article
-                onClick={() => openLightbox(i)}
-                className="group cursor-pointer"
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => e.key === "Enter" && openLightbox(i)}
-                aria-label={`View ${p.title}`}
-              >
-                <div className="lux-img relative overflow-hidden rounded-sm bg-ink/5">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={`/api/images/${p.imageId}`}
-                    alt={`${p.title} — ${p.place}`}
-                    className={`w-full object-cover transition-transform duration-700 group-hover:scale-105 ${
-                      i % 4 === 0 ? "aspect-[4/5]" : i % 4 === 1 ? "aspect-square" : "aspect-[4/5]"
-                    }`}
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-ink/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                    <span className="bg-bone/90 backdrop-blur-md text-ink px-4 py-2 text-[0.6rem] uppercase tracking-[0.3em]">
-                      Click to View
-                    </span>
-                  </div>
-                </div>
-                <div className="mt-5 flex items-baseline justify-between gap-4">
-                  <h2 className="h-display text-2xl group-hover:text-gold transition-colors">{p.title}</h2>
-                  <span className="shrink-0 text-[0.6rem] uppercase tracking-[0.3em] text-gold">
-                    {p.tag}
-                  </span>
-                </div>
-                <p className="mt-1 text-sm text-ink/50">{p.place}</p>
-              </article>
-            </Reveal>
+            <PortfolioCard key={p._id || i} item={p} index={i} onOpen={openLightbox} />
           ))}
         </div>
       )}

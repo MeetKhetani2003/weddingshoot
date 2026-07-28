@@ -11,12 +11,12 @@ import {
   SwipeableStories,
 } from "@/components/ui";
 import HeroCarousel from "@/components/HeroCarousel";
+import HomeImageGallery from "@/components/HomeImageGallery";
 import {
   SITE,
   highlights,
   portfolio,
   processSteps,
-  fallbackTestimonials,
 } from "@/lib/data";
 
 export const dynamic = "force-dynamic";
@@ -54,16 +54,10 @@ const collections = [
   { title: "Family", href: "/family-photography", image: "/DSC_0273 copy 2.png" },
 ];
 
-async function getTestimonials() {
-  return fallbackTestimonials;
-}
-
 export default async function HomePage() {
-  const quotes = await getTestimonials();
-  
   await connectToDatabase();
   let config = await HomeConfig.findById("home").lean();
-  
+
   if (!config) {
     config = {
       hero: {
@@ -81,16 +75,16 @@ export default async function HomePage() {
     };
   }
 
-  const heroImages = config.hero.imageIds.length > 0 
+  const heroImages = config.hero.imageIds.length > 0
     ? config.hero.imageIds.map((id: string) => `/api/images/${id}`)
     : ["/DSC_0504.jpg", "/DSC_0635 copy.jpg", "/DSC_0724.jpg", "/1A7A1097.JPG"];
 
   const exploreItems = config.explore.items.length > 0
     ? config.explore.items.map((item: any) => ({
-        label: item.label,
-        href: item.href,
-        image: item.imageId ? `/api/images/${item.imageId}` : "/12.jpg"
-      }))
+      label: item.label,
+      href: item.href,
+      image: item.imageId ? `/api/images/${item.imageId}` : "/12.jpg"
+    }))
     : highlights;
 
   return (
@@ -133,22 +127,25 @@ export default async function HomePage() {
         </div>
       </section>
 
-        {/* 2 — Explore Cards Section */}
-        <section className="border-b border-ink/8 bg-bone py-16 md:py-24">
-          <Reveal>
-            <p className="eyebrow mb-12 text-center">Explore Our World</p>
-            {exploreItems.length > 0 ? (
-              <ExploreCards 
-                items={exploreItems} 
-                layout={config.explore.layout}
-                cardShape={config.explore.cardShape}
-                spacing={config.explore.spacing}
-              />
-            ) : (
-              <p className="text-center text-ink/50 text-sm">No explore items configured yet.</p>
-            )}
-          </Reveal>
-        </section>
+      {/* 2 — Explore Cards Section */}
+      <section className="border-b border-ink/8 bg-bone py-16 md:py-24">
+        <Reveal>
+          <p className="eyebrow mb-12 text-center">Explore Our World</p>
+          {exploreItems.length > 0 ? (
+            <ExploreCards
+              items={exploreItems}
+              layout={config.explore.layout}
+              cardShape={config.explore.cardShape}
+              spacing={config.explore.spacing}
+            />
+          ) : (
+            <p className="text-center text-ink/50 text-sm">No explore items configured yet.</p>
+          )}
+        </Reveal>
+      </section>
+
+      {/* 3 — Editorial Image Showcase */}
+      <HomeImageGallery />
 
 
 
@@ -310,7 +307,7 @@ export default async function HomePage() {
       {/* // </section > */}
 
       {/* 9 — Planning Process */}
-      < section className="bg-petal/50 py-24 md:py-32" >
+      {/* < section className="bg-petal/50 py-24 md:py-32" >
         <div className="mx-auto max-w-7xl px-6">
           <SectionHeading eyebrow="The Process" title="How the magic unfolds" center />
           <div className="mt-16 grid gap-10 md:grid-cols-4">
@@ -323,38 +320,9 @@ export default async function HomePage() {
             ))}
           </div>
         </div>
-      </section >
+      </section > */}
 
-      {/* 10 — Testimonials */}
-      < section className="mx-auto max-w-7xl px-6 py-24 md:py-36" >
-        <SectionHeading
-          eyebrow="KIND WORDS FROM OUR "
-          script=""
-          title="TEB FAMILY"
-          center
-        />
-        <div className="mt-16 grid gap-8 md:grid-cols-3">
-          {quotes.map((t, i) => (
-            <Reveal key={t.id} delay={i * 120}>
-              <figure className="flex h-full flex-col border border-ink/10 bg-white/60 p-10">
-                <p className="text-bone">{"★".repeat(t.rating ?? 5)}</p>
-                <blockquote className="font-serif mt-6 flex-1 text-lg leading-relaxed text-ink/80">
-                  “{t.quote}”
-                </blockquote>
-                <figcaption className="mt-8">
-                  <p className="h-display text-xl">{t.couple}</p>
-                  <p className="mt-1 text-[0.62rem] uppercase tracking-[0.3em] text-ink/50">
-                    {t.event} · {t.location}
-                  </p>
-                </figcaption>
-              </figure>
-            </Reveal>
-          ))}
-        </div>
-        <Reveal className="mt-14 text-center">
-          <GoldLink href="/testimonials">Read All Testimonials</GoldLink>
-        </Reveal>
-      </section >
+
 
       {/* 11 — Instagram Feed */}
       {/* < section className="border-y border-ink/8 bg-bone py-20" >
@@ -380,23 +348,35 @@ export default async function HomePage() {
       </section > */}
 
       {/* 12 — CTA */}
-      < section className="bg-ink py-28 text-center text-bone md:py-40" >
-        <Reveal className="mx-auto max-w-3xl px-6">
-          <p className="font-script text-4xl text-bone md:text-5xl">your forever begins here</p>
-          <h2 className="h-display mt-4 text-4xl md:text-6xl">
+      <section className="relative overflow-hidden bg-ink py-16 text-center text-bone md:py-24">
+        {/* Background Image & Overlay */}
+        <div className="absolute inset-0 z-0">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/DSC_0508.JPG"
+            alt="Luxury Wedding"
+            className="h-full w-full object-cover opacity-40 scale-105"
+            loading="lazy"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-ink/90 via-ink/80 to-ink/90" />
+        </div>
+
+        <Reveal className="relative z-10 mx-auto max-w-3xl px-6">
+          <p className="font-script text-3xl text-gold md:text-4xl">your forever begins here</p>
+          <h2 className="h-display mt-2 text-3xl md:text-5xl">
             Let&apos;s create something eternal
           </h2>
-          <p className="mx-auto mt-6 max-w-xl text-sm leading-relaxed text-bone/60">
+          <p className="mx-auto mt-4 max-w-xl text-xs md:text-sm leading-relaxed text-bone/70">
             Tell us about your celebration — a wedding, a destination dream, a
             new life on the way. We&apos;ll write back within 24 hours.
           </p>
-          <div className="mt-12 flex justify-center">
+          <div className="mt-8 flex justify-center">
             <GoldLink href="/contact" dark>
               Enquire Now
             </GoldLink>
           </div>
         </Reveal>
-      </section >
+      </section>
     </>
   );
 }

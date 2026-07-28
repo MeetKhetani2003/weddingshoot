@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Reveal, SectionHeading, GoldLink, Marquee } from "@/components/ui";
+import { fallbackTestimonials } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "About Us — A Luxury Wedding Experience House",
@@ -127,14 +128,56 @@ export default function AboutPage() {
         </Reveal>
       </section>
 
+      {/* Testimonials Section */}
+      <section className="bg-bone py-24 md:py-32 border-t border-ink/8">
+        <div className="mx-auto max-w-7xl px-6">
+          <SectionHeading
+            eyebrow="KIND WORDS FROM OUR"
+            script="blessed couples"
+            title="TEB Family Stories"
+            center
+          />
+          <div className="mt-16 grid gap-8 md:grid-cols-3">
+            {fallbackTestimonials.map((t, i) => (
+              <Reveal key={t.id} delay={i * 120}>
+                <figure className="flex h-full flex-col border border-ink/10 bg-white/70 backdrop-blur-sm p-8 md:p-10 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-md">
+                  <div className="flex items-center gap-1 text-gold text-sm">
+                    {"★".repeat(t.rating ?? 5)}
+                  </div>
+                  <blockquote className="font-serif mt-6 flex-1 text-lg leading-relaxed text-ink/80 italic">
+                    “{t.quote}”
+                  </blockquote>
+                  <figcaption className="mt-8 pt-6 border-t border-ink/10">
+                    <p className="h-display text-xl text-ink font-serif">{t.couple}</p>
+                    <p className="mt-1 text-[0.62rem] uppercase tracking-[0.3em] text-gold-deep font-sans">
+                      {t.event} · {t.location}
+                    </p>
+                  </figcaption>
+                </figure>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <Marquee items={["Trust", "Craftsmanship", "Elegance", "Emotion"]} />
 
-      <section className="bg-ink py-24 text-center text-bone">
-        <Reveal className="mx-auto max-w-2xl px-6">
+      <section className="relative overflow-hidden bg-ink py-16 text-center text-bone md:py-20">
+        <div className="absolute inset-0 z-0">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/12.jpg"
+            alt="Luxury Wedding"
+            className="h-full w-full object-cover opacity-35 scale-105"
+            loading="lazy"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-ink/90 via-ink/80 to-ink/90" />
+        </div>
+        <Reveal className="relative z-10 mx-auto max-w-2xl px-6">
           <h2 className="h-display text-3xl md:text-5xl">
             Come, be part of our story
           </h2>
-          <div className="mt-10 flex justify-center">
+          <div className="mt-8 flex justify-center">
             <GoldLink href="/contact" dark>
               Start a Conversation
             </GoldLink>

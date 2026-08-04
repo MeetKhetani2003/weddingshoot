@@ -66,8 +66,9 @@ export function SectionHeading({
         <p className="font-script text-3xl text-gold mt-4 md:text-4xl">{script}</p>
       )}
       <h2
-        className={`h-display mt-3 text-4xl md:text-6xl ${light ? "text-bone" : "text-ink"
+        className={`h-display mt-3 ${light ? "text-bone" : "text-ink"
           }`}
+        style={{ fontSize: "var(--section-heading-size)" }}
       >
         {title}
       </h2>
@@ -192,7 +193,10 @@ function ExploreCard({
         <span className="block text-xs uppercase tracking-[0.3em] text-bone mb-2 opacity-80 transition-opacity duration-500 group-hover:opacity-100">
           Explore
         </span>
-        <span className="block h-display text-2xl text-bone transition-transform duration-500 group-hover:translate-x-1">
+        <span 
+          className="block h-display text-bone transition-transform duration-500 group-hover:translate-x-1"
+          style={{ fontSize: "var(--explore-title-size)" }}
+        >
           {h.label}
         </span>
       </div>

@@ -71,7 +71,10 @@ export default async function HomePage() {
         cardShape: "portrait",
         spacing: "medium",
         items: []
-      }
+      },
+      gallery: {},
+      stories: {},
+      cta: {}
     };
   }
 
@@ -90,20 +93,27 @@ export default async function HomePage() {
   return (
     <>
       {/* 1 — Cinematic Hero */}
-      <section className="relative flex min-h-svh items-end overflow-hidden bg-ink">
-        <div className="absolute inset-0">
+      {config.hero?.isVisible !== false && (
+        <section 
+          className="relative flex min-h-svh items-end overflow-hidden bg-ink"
+          style={{ 
+            backgroundColor: config.hero?.bgColor || undefined, 
+            color: config.hero?.textColor || undefined 
+          }}
+        >
+          <div className="absolute inset-0">
           <HeroCarousel images={heroImages} />
         </div>
         <div className="relative mx-auto w-full max-w-7xl px-6 pb-24 pt-40 md:pb-32">
           <p
-            className="fade-up font-script mt-6 text-5xl text-bone md:text-6xl"
-            style={{ animationDelay: "0.6s" }}
+            className="fade-up font-script mt-6 text-bone"
+            style={{ animationDelay: "0.6s", fontSize: "var(--hero-subtitle-size)" }}
           >
             {config.hero.subtitle}
           </p>
           <h1
-            className="fade-up h-display mt-2 max-w-5xl text-4xl text-bone md:text-6xl lg:text-7xl"
-            style={{ animationDelay: "0.8s" }}
+            className="fade-up h-display mt-2 max-w-5xl text-bone"
+            style={{ animationDelay: "0.8s", fontSize: "var(--hero-title-size)", lineHeight: "1.1" }}
           >
             {config.hero.title} <span className="font-sans text-white  font-bold text-[0.9em] inline-block -translate-y-1 uppercase">{config.hero.titleHighlight}</span>
           </h1>
@@ -126,11 +136,19 @@ export default async function HomePage() {
           Since 2016
         </div>
       </section>
+      )}
 
       {/* 2 — Explore Cards Section */}
-      <section className="border-b border-ink/8 bg-bone py-16 md:py-24">
-        <Reveal>
-          <p className="eyebrow mb-12 text-center">Explore Our World</p>
+      {config.explore?.isVisible !== false && (
+        <section 
+          className="border-b border-ink/8 bg-bone py-16 md:py-24"
+          style={{ 
+            backgroundColor: config.explore?.bgColor || undefined, 
+            color: config.explore?.textColor || undefined 
+          }}
+        >
+          <Reveal>
+            <p className="eyebrow mb-12 text-center" style={{ color: config.explore?.textColor || undefined }}>Explore Our World</p>
           {exploreItems.length > 0 ? (
             <ExploreCards
               items={exploreItems}
@@ -142,10 +160,15 @@ export default async function HomePage() {
             <p className="text-center text-ink/50 text-sm">No explore items configured yet.</p>
           )}
         </Reveal>
-      </section>
+        </section>
+      )}
 
       {/* 3 — Editorial Image Showcase */}
-      <HomeImageGallery />
+      {config.gallery?.isVisible !== false && (
+        <div style={{ backgroundColor: config.gallery?.bgColor || undefined, color: config.gallery?.textColor || undefined }}>
+          <HomeImageGallery />
+        </div>
+      )}
 
 
 
@@ -196,8 +219,15 @@ export default async function HomePage() {
       </section> */}
 
       {/* 5 — Wedding Stories */}
-      <section className="mx-auto max-w-7xl px-6 py-24 md:py-36">
-        <SectionHeading
+      {config.stories?.isVisible !== false && (
+        <section 
+          className="mx-auto max-w-7xl px-6 py-24 md:py-36"
+          style={{ 
+            backgroundColor: config.stories?.bgColor || undefined, 
+            color: config.stories?.textColor || undefined 
+          }}
+        >
+          <SectionHeading
           eyebrow="WEDDING STORIES"
           script=""
           title=""
@@ -209,7 +239,8 @@ export default async function HomePage() {
         <Reveal className="mt-14 text-center">
           <GoldLink href="/portfolio">View Full Portfolio</GoldLink>
         </Reveal>
-      </section>
+        </section>
+      )}
 
       {/* 6 — Featured Film */}
       {/* <section className="relative overflow-hidden bg-ink">
@@ -348,8 +379,15 @@ export default async function HomePage() {
       </section > */}
 
       {/* 12 — CTA */}
-      <section className="relative overflow-hidden bg-ink py-16 text-center text-bone md:py-24">
-        {/* Background Image & Overlay */}
+      {config.cta?.isVisible !== false && (
+        <section 
+          className="relative overflow-hidden bg-ink py-16 text-center text-bone md:py-24"
+          style={{ 
+            backgroundColor: config.cta?.bgColor || undefined, 
+            color: config.cta?.textColor || undefined 
+          }}
+        >
+          {/* Background Image & Overlay */}
         <div className="absolute inset-0 z-0">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -376,7 +414,8 @@ export default async function HomePage() {
             </GoldLink>
           </div>
         </Reveal>
-      </section>
+        </section>
+      )}
     </>
   );
 }

@@ -7,6 +7,9 @@ export interface IHomeConfig extends Document<string> {
     title: string;
     titleHighlight: string;
     imageIds: string[];
+    isVisible: boolean;
+    textColor: string;
+    bgColor: string;
   };
   explore: {
     layout: 'carousel' | 'grid';
@@ -19,6 +22,24 @@ export interface IHomeConfig extends Document<string> {
       orientation?: 'vertical' | 'horizontal' | 'auto';
       galleryImageIds?: string[];
     }[];
+    isVisible: boolean;
+    textColor: string;
+    bgColor: string;
+  };
+  gallery: {
+    isVisible: boolean;
+    textColor: string;
+    bgColor: string;
+  };
+  stories: {
+    isVisible: boolean;
+    textColor: string;
+    bgColor: string;
+  };
+  cta: {
+    isVisible: boolean;
+    textColor: string;
+    bgColor: string;
   };
 }
 
@@ -29,6 +50,9 @@ const HomeConfigSchema = new Schema({
     title: { type: String, default: "Where every celebration becomes" },
     titleHighlight: { type: String, default: "\"Eternal\"" },
     imageIds: [{ type: String }],
+    isVisible: { type: Boolean, default: true },
+    textColor: { type: String, default: "" }, // empty string means inherit theme
+    bgColor: { type: String, default: "" },
   },
   explore: {
     layout: { type: String, enum: ["carousel", "grid"], default: "carousel" },
@@ -40,8 +64,26 @@ const HomeConfigSchema = new Schema({
       imageId: String,
       orientation: { type: String, enum: ["vertical", "horizontal", "auto"], default: "auto" },
       galleryImageIds: [{ type: String }]
-    }]
-  }
+    }],
+    isVisible: { type: Boolean, default: true },
+    textColor: { type: String, default: "" },
+    bgColor: { type: String, default: "" },
+  },
+  gallery: {
+    isVisible: { type: Boolean, default: true },
+    textColor: { type: String, default: "" },
+    bgColor: { type: String, default: "" },
+  },
+  stories: {
+    isVisible: { type: Boolean, default: true },
+    textColor: { type: String, default: "" },
+    bgColor: { type: String, default: "" },
+  },
+  cta: {
+    isVisible: { type: Boolean, default: true },
+    textColor: { type: String, default: "" },
+    bgColor: { type: String, default: "" },
+  },
 }, { timestamps: true });
 
 export default mongoose.models.HomeConfig || mongoose.model<IHomeConfig>('HomeConfig', HomeConfigSchema);

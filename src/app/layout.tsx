@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { connectToDatabase } from "@/lib/mongodb";
+import ThemeConfig from "@/models/ThemeConfig";
 import "./globals.css";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
@@ -41,9 +43,51 @@ const orgSchema = {
   ],
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  await connectToDatabase();
+  let themeConfig = await ThemeConfig.findById("theme").lean();
+  
+  if (!themeConfig) {
+    themeConfig = {
+      colors: {
+        ink: "#000000",
+        bone: "#edddd3",
+        gold: "#c5a880",
+        background: "#edddd3",
+      },
+      typography: {
+        heroTitleSize: 4,
+        heroSubtitleSize: 3.75,
+        exploreTitleSize: 1.5,
+        sectionHeadingSize: 2.25,
+      }
+    };
+  }
+
+  const customThemeCSS = `
+    :root {
+      --color-ink: ${themeConfig.colors?.ink || '#000000'} !important;
+      --color-bone: ${themeConfig.colors?.bone || '#edddd3'} !important;
+      --color-gold: ${themeConfig.colors?.gold || '#c5a880'} !important;
+      --color-background: ${themeConfig.colors?.background || '#edddd3'} !important;
+      
+      --hero-title-size: ${themeConfig.typography?.heroTitleSize || 4}rem !important;
+      --hero-subtitle-size: ${themeConfig.typography?.heroSubtitleSize || 3.75}rem !important;
+      --explore-title-size: ${themeConfig.typography?.exploreTitleSize || 1.5}rem !important;
+      --section-heading-size: ${themeConfig.typography?.sectionHeadingSize || 2.25}rem !important;
+    }
+    
+    body {
+      background-color: var(--color-background) !important;
+      color: var(--color-ink) !important;
+    }
+  `;
+
   return (
     <html lang="en">
+      <head>
+        <style dangerouslySetInnerHTML={{ __html: customThemeCSS }} />
+      </head>
       <body className="bg-bone text-ink antialiased">
         <script
           type="application/ld+json"

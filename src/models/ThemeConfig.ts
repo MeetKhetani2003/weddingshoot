@@ -14,6 +14,11 @@ export interface IThemeConfig extends Document<string> {
     exploreTitleSize: number;
     sectionHeadingSize: number;
   };
+  socialLinks: {
+    facebook: string;
+    instagram: string;
+    youtube: string;
+  };
 }
 
 const ThemeConfigSchema = new Schema({
@@ -29,6 +34,11 @@ const ThemeConfigSchema = new Schema({
     heroSubtitleSize: { type: Number, default: 3.75 }, // rem (60px)
     exploreTitleSize: { type: Number, default: 1.5 }, // rem
     sectionHeadingSize: { type: Number, default: 2.25 }, // rem
+  },
+  socialLinks: {
+    facebook: { type: String, default: "" },
+    instagram: { type: String, default: "https://instagram.com" },
+    youtube: { type: String, default: "" },
   }
 }, { timestamps: true });
 

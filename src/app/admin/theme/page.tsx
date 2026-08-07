@@ -20,6 +20,11 @@ export default function ThemeSettingsPage() {
       exploreTitleSize: 1.5,
       sectionHeadingSize: 2.25,
     },
+    socialLinks: {
+      facebook: "",
+      instagram: "https://instagram.com",
+      youtube: "",
+    },
   });
 
   useEffect(() => {
@@ -27,7 +32,14 @@ export default function ThemeSettingsPage() {
       .then((res) => res.json())
       .then((data) => {
         if (data && data.colors) {
-          setTheme(data);
+          setTheme((prev) => ({
+            ...prev,
+            ...data,
+            socialLinks: {
+              ...prev.socialLinks,
+              ...(data.socialLinks || {}),
+            },
+          }));
         }
         setLoading(false);
       })
@@ -52,6 +64,16 @@ export default function ThemeSettingsPage() {
       ...prev,
       typography: {
         ...prev.typography,
+        [key]: value,
+      },
+    }));
+  };
+
+  const handleSocialLinkChange = (key: string, value: string) => {
+    setTheme((prev) => ({
+      ...prev,
+      socialLinks: {
+        ...prev.socialLinks,
         [key]: value,
       },
     }));
@@ -89,7 +111,7 @@ export default function ThemeSettingsPage() {
         <div>
           <h1 className="text-3xl font-script text-gold">Theme Settings</h1>
           <p className="mt-2 text-sm text-bone/60">
-            Manage site colors and section text sizes. Changes apply globally.
+            Manage site colors, text sizes, and social links. Changes apply globally.
           </p>
         </div>
         <button
@@ -255,6 +277,50 @@ export default function ThemeSettingsPage() {
                 onChange={(e) =>
                   handleTypographyChange("sectionHeadingSize", parseFloat(e.target.value) || 2.25)
                 }
+                className="w-full rounded border border-bone/20 bg-black px-4 py-2 text-bone focus:border-gold focus:outline-none"
+              />
+            </div>
+          </div>
+        </section>
+        {/* Social Links Section */}
+        <section className="rounded-xl border border-bone/10 bg-black/40 p-6 md:col-span-2">
+          <h2 className="mb-6 border-b border-bone/10 pb-4 text-xl text-bone">
+            Social Links (Footer)
+          </h2>
+          <div className="grid gap-6 md:grid-cols-3">
+            <div>
+              <label className="mb-2 block text-sm text-bone/80">
+                Instagram URL
+              </label>
+              <input
+                type="url"
+                value={theme.socialLinks.instagram}
+                onChange={(e) => handleSocialLinkChange("instagram", e.target.value)}
+                placeholder="https://instagram.com/yourhandle"
+                className="w-full rounded border border-bone/20 bg-black px-4 py-2 text-bone focus:border-gold focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="mb-2 block text-sm text-bone/80">
+                Facebook URL
+              </label>
+              <input
+                type="url"
+                value={theme.socialLinks.facebook}
+                onChange={(e) => handleSocialLinkChange("facebook", e.target.value)}
+                placeholder="https://facebook.com/yourpage"
+                className="w-full rounded border border-bone/20 bg-black px-4 py-2 text-bone focus:border-gold focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="mb-2 block text-sm text-bone/80">
+                YouTube URL
+              </label>
+              <input
+                type="url"
+                value={theme.socialLinks.youtube}
+                onChange={(e) => handleSocialLinkChange("youtube", e.target.value)}
+                placeholder="https://youtube.com/@yourchannel"
                 className="w-full rounded border border-bone/20 bg-black px-4 py-2 text-bone focus:border-gold focus:outline-none"
               />
             </div>
